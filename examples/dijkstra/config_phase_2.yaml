@@ -1,0 +1,52 @@
+# Configuration for Dijkstra's algorithm evolution - Phase 2: Robustness and Refinement
+max_iterations: 150
+checkpoint_interval: 15
+log_level: "INFO"
+
+# LLM configuration
+llm:
+  primary_model: "google/gemini-2.0-flash-001"
+  primary_model_weight: 0.7
+  secondary_model: "anthropic/claude-3.7-sonnet"
+  secondary_model_weight: 0.3
+  api_base: "https://openrouter.ai/api/v1"
+  temperature: 0.5
+  top_p: 0.9
+  max_tokens: 4096
+  timeout: 300
+
+# Prompt configuration
+prompt:
+  system_message: |
+    You are an expert programmer and algorithm designer.
+    We are refining a Python function `dijkstra_algorithm(graph, start_node)` for shortest paths in a graph with non-negative edge weights.
+    The current implementations have achieved some correctness. Now, focus on:
+    1. Robustness: Ensure correct handling of all edge cases (empty graph, graph with one node, disconnected components, start node not in graph).
+    2. Efficiency: Ensure the standard efficient approach for Dijkstra (using a min-priority queue with `heapq`) is correctly implemented.
+    3. Clarity and Correctness: The code should be clean, correct, and adhere to the specified input/output formats precisely.
+    The graph is `{'node1': {'neighborA': weight1, ...}, ...}`.
+    Output is `{'node': shortest_distance_from_start}` or `None` if start_node invalid. Unreachable nodes `float('infinity')`.
+    The target function signature is `def dijkstra_algorithm(graph, start_node):`
+  num_top_programs: 4
+  use_template_stochasticity: true
+
+# Database configuration
+database:
+  population_size: 60
+  archive_size: 25
+  num_islands: 4
+  elite_selection_ratio: 0.25
+  exploitation_ratio: 0.6
+
+# Evaluator configuration
+evaluator:
+  timeout: 45
+  cascade_evaluation: true
+  cascade_thresholds: [0.5, 0.8]
+  parallel_evaluations: 4
+  use_llm_feedback: false
+
+# Evolution settings
+diff_based_evolution: true 
+allow_full_rewrites: true 
+max_code_length: 7000

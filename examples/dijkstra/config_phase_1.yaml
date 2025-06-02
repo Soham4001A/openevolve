@@ -1,0 +1,60 @@
+# Configuration for Dijkstra's algorithm evolution - Phase 1: Basic Correctness
+max_iterations: 100
+checkpoint_interval: 10
+log_level: "INFO"
+
+# LLM configuration
+llm:
+  primary_model: "google/gemini-2.0-flash-001"
+  primary_model_weight: 0.8
+  secondary_model: "anthropic/claude-3.7-sonnet"
+  secondary_model_weight: 0.2
+  api_base: "https://openrouter.ai/api/v1"
+  temperature: 0.6
+  top_p: 0.95
+  max_tokens: 4096
+  timeout: 300 
+
+# Prompt configuration
+prompt:
+  system_message: |
+    You are an expert programmer and algorithm designer specializing in graph algorithms.
+    Your task is to implement or improve a Python function called `dijkstra_algorithm(graph, start_node)`
+    that correctly calculates the shortest paths from a `start_node` to all other nodes in a weighted graph with non-negative edge weights.
+    The graph is represented as a dictionary of dictionaries: `{'node1': {'neighborA': weight1, ...}, ...}`.
+    The function should return a dictionary of `{'node': shortest_distance_from_start}`.
+    Distances to unreachable nodes should be `float('infinity')`.
+    If the `start_node` is not in the graph, the function should return `None`.
+
+    Consider these key aspects of Dijkstra's algorithm:
+    1. Initialization: Set distance to start_node to 0, others to infinity.
+    2. Data structure for unvisited nodes: A priority queue (min-heap using `heapq`) is typically most efficient, storing (distance, node).
+    3. Iteration: While there are unvisited nodes accessible, extract the one with the smallest known distance.
+    4. Relaxation: For each neighbor of the current node, update its distance if a shorter path is found via the current node.
+    
+    Focus on correctness first. The provided code block might be incomplete or buggy.
+    The target function signature is `def dijkstra_algorithm(graph, start_node):`
+    Ensure your implementation uses standard Python features and imports `heapq` if needed.
+  num_top_programs: 3
+  use_template_stochasticity: true
+
+# Database configuration
+database:
+  population_size: 50
+  archive_size: 20
+  num_islands: 3
+  elite_selection_ratio: 0.2
+  exploitation_ratio: 0.7
+
+# Evaluator configuration
+evaluator:
+  timeout: 30 
+  cascade_evaluation: true
+  cascade_thresholds: [0.3, 0.6] 
+  parallel_evaluations: 4
+  use_llm_feedback: false
+
+# Evolution settings
+diff_based_evolution: false
+allow_full_rewrites: true
+max_code_length: 6000
